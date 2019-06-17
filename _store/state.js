@@ -1,5 +1,5 @@
 export default {
     countries:[],
     cities:[],
-    provinces:{}
+    provinces:[]
 }

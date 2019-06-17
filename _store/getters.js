@@ -1,14 +1,14 @@
-// Return shippingMethods
-export function getterShippingMethods (state){
-    return state.shippingMethods
+// Return countries
+export function countries (state){
+    return state.countries
 }
 
-// Return paymentMethods
-export function getterPaymentMethods (state){
-    return state.paymentMethods
+// Return cities
+export function cities (state){
+    return state.cities
 }
 
-// Return paymentMethods
-export function getterPaymentCheckout (state){
-  return state.checkout
+// Return provinces
+export function provinces (state){
+  return state.provinces
 }

@@ -7,4 +7,6 @@ export default {
   countries : `${urlBase}/countries`,
   cities : `${urlBase}/cities`,
   provinces : `${urlBase}/provinces`,
+  polygons : `${urlBase}/polygons`,
+  geozones : `${urlBase}/geozones`,
 }

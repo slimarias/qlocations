@@ -9,4 +9,5 @@ export default {
   provinces : `${urlBase}/provinces`,
   polygons : `${urlBase}/polygons`,
   geozones : `${urlBase}/geozones`,
+  neighborhoods : `${urlBase}/neighborhoods`,
 }

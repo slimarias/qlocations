@@ -15,4 +15,7 @@ export default {
   adminGeozones: 'Geo zones',
   adminGeozoneCreate: 'New Geo zone',
   adminGeozoneEdit: 'Edit Geo zone',
+  adminNeighborhoods: 'Neighborhoods',
+  adminNeighborhoodCreate: 'New Neighborhood',
+  adminNeighborhoodEdit: 'Edit Neighborhood',
 }

@@ -110,6 +110,34 @@
             <div class="col-12 col-md-6 q-py-md">
               <div class="row q-col-gutter-md">
                 <div class="col-8">
+                  {{ $tr('qlocations.layout.form.neighborhoods') }}
+                </div>
+                <div class="col-4 text-right">
+                  <q-btn color="positive" :loading="loading" @click="locale.formTemplate.neighborhoods.push(0)"
+                         icon="fas fa-plus" />
+                </div>
+              </div>
+              <div class="row q-col-gutter-md q-py-md">
+                <div class="col-12" v-for="(neighborhood,i) in locale.formTemplate.neighborhoods">
+                  <div class="row q-col-gutter-md">
+                    <div class="col-10">
+                      <!--Crud countries-->
+                      <crud :crud-data="import('@imagina/qlocations/_crud/polygons')"
+                            type="select" :crud-props="{label:`${$tr('qlocations.layout.form.neighborhood')}*`}"
+                            v-model="locale.formTemplate.neighborhoods[i]" :config="{options: {label: 'name', value: 'id'}}"
+                      />
+                    </div>
+                    <div class="col-2 text-right">
+                      <q-btn color="negative" :loading="loading" @click="locale.formTemplate.neighborhoods.splice(i,1)"
+                             icon="fas fa-trash" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-12 col-md-6 q-py-md">
+              <div class="row q-col-gutter-md">
+                <div class="col-8">
                   {{ $tr('qlocations.layout.form.polygons') }}
                 </div>
                 <div class="col-4 text-right">
@@ -186,6 +214,7 @@
             provinces: [],
             cities: [],
             polygons: [],
+            neighborhoods: [],
           },
           fieldsTranslatable: {
           }

@@ -12,19 +12,29 @@
         <q-form autocorrect="off" autocomplete="off" ref="formContent" class="full-width q-my-sm" v-if="locale.success"
                 @submit="itemId?updateItem():createItem()" @validation-error="$alert.error($tr('ui.message.formInvalid'))">
           <div class="row q-col-gutter-md">
-            <div class="col-12">
+            <div class="col-12 col-md-6">
               <q-input outlined dense v-model="locale.formTemplate.name"
                        :label="`${$tr('ui.form.name')} (${locale.language})*`"
                        :rules="[val => !!val || $tr('ui.message.fieldRequired')]"/>
-              <div class="input-title">{{ `${$tr('ui.form.description')} (${locale.language})*` }}</div>
-              <q-field borderless v-model="locale.formTemplate.description" :rules="[val => !!val || $tr('ui.message.fieldRequired')]">
-                <q-editor class="full-width" v-model="locale.formTemplate.description"/>
-              </q-field>
+              <!--Crud provinces-->
+              <crud :crud-data="import('@imagina/qlocations/_crud/provinces')"
+                    type="select" :crud-props="{label:`${$tr('qlocations.layout.form.province')}*`}"
+                    v-model="locale.formTemplate.provinceId" :config="{options: {label: 'name', value: 'id'}}"
+                    :custom-data="{read: {requestParams: {filter: {country: locale.formTemplate.countryId}}}}"
+              />
             </div>
-            <div class="col-12">
-              <q-no-ssr>
-                <div id="map" class="full-width" style="height:300px"></div>
-              </q-no-ssr>
+            <div class="col-12 col-md-6">
+              <!--Crud countries-->
+              <crud :crud-data="import('@imagina/qlocations/_crud/countries')"
+                    type="select" :crud-props="{label:`${$tr('qlocations.layout.form.country')}*`}"
+                    v-model="locale.formTemplate.countryId" :config="{options: {label: 'name', value: 'id'}}"
+              />
+              <!--Crud cities-->
+              <crud :crud-data="import('@imagina/qlocations/_crud/cities')"
+                    type="select" :crud-props="{label:`${$tr('qlocations.layout.form.city')}*`}"
+                    v-model="locale.formTemplate.cityId" :config="{options: {label: 'name', value: 'id'}}"
+                    :custom-data="{read: {requestParams: {filter: {country: locale.formTemplate.provinceId}}}}"
+              />
             </div>
           </div>
           <q-page-sticky
@@ -45,7 +55,7 @@
 </template>
 
 <script>
-  import {gmaps} from '@imagina/qlocations/_plugins/gmaps'
+
   export default {
     components: {
     },
@@ -62,26 +72,22 @@
     data() {
       return {
         locale: {},
-        map:{
-          class: null,
-          polygon: null,
-          drawing: null
-        },
         loading: false,
         success: false,
         itemId: false,
-        mapApiKey: this.$store.getters['qsiteSettings/getSettingValueByName']('isite::api-maps'),
       }
     },
     computed: {
       dataLocale() {
         return {
           fields: {
-            points: [],
+            code: '',
+            countryId: '48',
+            provinceId: null,
+            cityId: null,
           },
           fieldsTranslatable: {
             name: '',
-            description: '',
           }
         }
       },
@@ -94,71 +100,19 @@
         this.itemId = this.$route.params.id
         if (this.locale.success) this.$refs.localeComponent.vReset()
         await this.getData()
-        gmaps.initializeGoogleApi(this.mapApiKey)
-        this.initMap()
         this.success = true
         this.loading = false
-      },
-      initMap(){
-        setTimeout(() => {
-          //location
-          let latitude = 4.4408112
-          let longitude = -75.223417
-          let OLD = new google.maps.LatLng(latitude, longitude)
-          //MAP
-          this.map.class = new google.maps.Map(document.getElementById('map'), {
-            zoom: 16,
-            mapTypeId: google.maps.MapTypeId.ROADMAP,
-            center: OLD,
-          });
-
-          let polyOptions = {
-            editable: true,
-          }
-
-          if(this.locale.form.points.length > 0){
-            polyOptions.paths = this.locale.form.points
-          }
-
-          this.map.drawing = new google.maps.drawing.DrawingManager({
-            drawingMode: google.maps.drawing.OverlayType.POLYGON,
-            drawingControl: true,
-            drawingControlOptions: {
-              position: google.maps.ControlPosition.TOP_CENTER,
-              drawingModes: ['polygon']
-            },
-            polygonOptions: polyOptions,
-
-          });
-
-          this.map.drawing.setMap(this.map.class);
-          google.maps.event.addListener(this.map.drawing, 'overlaycomplete', (event)=> {
-            google.maps.event.addListener(this.map.drawing, 'polygoncomplete', (polygon) => {
-              let points = []
-              let polPoints = polygon.getPath().getArray()
-              console.log(polPoints)
-              for(let x in polPoints){
-                points[x] = {
-                  lat: polPoints[x].lat(),
-                  lng: polPoints[x].lng(),
-                }
-              }
-              this.locale.form.points = points
-            });
-          })
-
-        }, 500)
       },
       getData() {
         return new Promise((resolve, reject) => {
           const itemId = this.$clone(this.itemId)
           if (itemId) {
-            let configName = 'apiRoutes.qlocations.polygons'
+            let configName = 'apiRoutes.qlocations.neighborhoods'
             //Params
             let params = {
               refresh: true,
               params: {
-                include: 'province,country',
+                include: 'city',
                 filter: {allTranslations: true}
               }
             }
@@ -166,8 +120,9 @@
             this.$crud.show(configName, itemId, params).then(response => {
               this.orderDataItemToLocale(response.data)
               setTimeout(()=>{
-                this.locale.form.countryId = response.data.countryId
-                this.locale.form.provinceId = response.data.provinceId
+                this.locale.form.countryId = response.data.city.countryId
+                this.locale.form.provinceId = response.data.city.provinceId
+                this.locale.form.cityId = response.data.cityId
               },500)
               resolve(true)//Resolve
             }).catch(error => {
@@ -187,7 +142,7 @@
       async updateItem() {
         if (await this.$refs.localeComponent.validateForm()) {
           this.loading = true
-          let configName = 'apiRoutes.qlocations.polygons'
+          let configName = 'apiRoutes.qlocations.neighborhoods'
           this.$crud.update(configName, this.itemId, this.getDataForm()).then(response => {
             this.$alert.success({message: `${this.$tr('ui.message.recordUpdated')}`})
             //this.initForm()
@@ -201,7 +156,7 @@
       async createItem() {
         if (await this.$refs.localeComponent.validateForm()) {
           this.loading = true
-          let configName = 'apiRoutes.qlocations.polygons'
+          let configName = 'apiRoutes.qlocations.neighborhoods'
           this.$crud.create(configName, this.getDataForm()).then(response => {
             this.$alert.success({message: `${this.$tr('ui.message.recordCreated')}`})
             //this.initForm()
@@ -219,7 +174,7 @@
           if (valueItem == null || valueItem == undefined)
             delete response[item]
         }
-        //response.selectable = JSON.stringify(response.selectable)
+        response.selectable = JSON.stringify(response.selectable)
         return response
       },
     }

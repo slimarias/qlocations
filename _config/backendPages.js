@@ -94,7 +94,6 @@ export default {
     icon: 'fas fa-draw-polygon',
     authenticated: true,
   },
-
   //Geozones
   geozones: {
     permission: 'ilocations.geozones.index',
@@ -129,6 +128,42 @@ export default {
     layout: () => import('@imagina/qsite/_layouts/master.vue'),
     title: 'qlocations.sidebar.adminGeozoneEdit',
     icon: 'fas fa-map-marker-alt',
+    authenticated: true,
+  },
+  //Neighborhoods
+  neighborhoods: {
+    permission: 'ilocations.neighborhoods.index',
+    activated: true,
+    path: '/locations/neighborhoods',
+    name: 'qlocations.admin.neighborhoods.index',
+    page: () => import('@imagina/qlocations/_pages/admin/neighborhoods/index'),
+    layout: () => import('@imagina/qsite/_layouts/master.vue'),
+    title: 'qlocations.sidebar.adminNeighborhoods',
+    icon: 'fas fa-home',
+    authenticated: true,
+  },
+  //Polygon create
+  neighborhoodCreate: {
+    permission: null,
+    activated: true,
+    path: '/locations/neighborhoods/create',
+    name: 'qlocations.admin.neighborhoods.create',
+    page: () => import('@imagina/qlocations/_pages/admin/neighborhoods/form'),
+    layout: () => import('@imagina/qsite/_layouts/master.vue'),
+    title: 'qlocations.sidebar.adminNeighborhoodCreate',
+    icon: 'fas fa-home',
+    authenticated: true,
+  },
+  //Polygon edit
+  neighborhoodEdit: {
+    permission: null,
+    activated: true,
+    path: '/locations/neighborhood/:id',
+    name: 'qlocations.admin.neighborhoods.edit',
+    page: () => import('@imagina/qlocations/_pages/admin/neighborhoods/form'),
+    layout: () => import('@imagina/qsite/_layouts/master.vue'),
+    title: 'qlocations.sidebar.adminNeighborhoodEdit',
+    icon: 'fas fa-home',
     authenticated: true,
   },
 

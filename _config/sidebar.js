@@ -9,6 +9,7 @@ export default [
       pages.qlocations.countries,
       pages.qlocations.provinces,
       pages.qlocations.cities,
+      pages.qlocations.neighborhoods,
       pages.qlocations.polygons,
       pages.qlocations.geozones,
     ]

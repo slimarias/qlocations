@@ -104,7 +104,7 @@
           //location
           let latitude = 4.4408112
           let longitude = -75.223417
-          let OLD = new google.maps.LatLng(latitude, longitude)
+          let OLD = this.locale.form.points[0] || new google.maps.LatLng(latitude, longitude)
           //MAP
           this.map.class = new google.maps.Map(document.getElementById('map'), {
             zoom: 16,
@@ -112,23 +112,6 @@
             center: OLD,
           });
 
-          this.map.drawing = new google.maps.drawing.DrawingManager({
-            drawingMode: google.maps.drawing.OverlayType.POLYGON,
-            drawingControl: true,
-            drawingControlOptions: {
-              position: google.maps.ControlPosition.TOP_CENTER,
-              drawingModes: ['polygon']
-            },
-            polygonOptions: {
-              editable: true,
-              strokeColor: '#FF0000',
-              strokeOpacity: 0.8,
-              strokeWeight: 3,
-              fillColor: '#FF0000',
-              fillOpacity: 0.35,
-            },
-
-          });
           let polyOptions = {
             strokeColor: '#FF0000',
             strokeOpacity: 0.8,
@@ -137,29 +120,55 @@
             fillOpacity: 0.35,
             editable: true
           }
+
           if(this.locale.form.points.length > 0){
             polyOptions.paths = this.locale.form.points
           }
 
-          this.map.polygon = new google.maps.Polygon(polyOptions);
-          this.map.polygon.setMap(this.map.class);
+          this.map.drawing = new google.maps.drawing.DrawingManager({
+            drawingMode: google.maps.drawing.OverlayType.POLYGON,
+            drawingControl: true,
+            drawingControlOptions: {
+              position: google.maps.ControlPosition.TOP_CENTER,
+              drawingModes: ['polygon']
+            },
+            polygonOptions: polyOptions,
+
+          });
+          this.map.polygon = new google.maps.Polygon(polyOptions)
+
+          this.map.polygon.setMap(this.map.class)
 
           this.map.drawing.setMap(this.map.class);
-          google.maps.event.addListener(this.map.drawing, 'overlaycomplete', (event)=> {
-            google.maps.event.addListener(this.map.drawing, 'polygoncomplete', (polygon) => {
-              let points = []
-              let polPoints = polygon.getPath().getArray()
-              console.log(polPoints)
-              for(let x in polPoints){
-                points[x] = {
-                  lat: polPoints[x].lat(),
-                  lng: polPoints[x].lng(),
-                }
+          google.maps.event.addListener(this.map.drawing, 'overlaycomplete', (event) => {
+            let polygon = event.overlay
+            let points = []
+            let polPoints = polygon.getPath().getArray()
+            console.log(polPoints)
+            for(let x in polPoints){
+              points[x] = {
+                lat: polPoints[x].lat(),
+                lng: polPoints[x].lng(),
               }
-              this.locale.form.points = points
-            });
+            }
+            this.locale.form.points = points
           })
 
+          let polygonEvent = ()=>{
+            let points = []
+            let polPoints = this.map.polygon.getPath().getArray()
+            console.log(polPoints)
+            for(let x in polPoints){
+              points[x] = {
+                lat: polPoints[x].lat(),
+                lng: polPoints[x].lng(),
+              }
+            }
+            this.locale.form.points = points
+          }
+
+          google.maps.event.addListener(this.map.polygon.getPath(), 'set_at', polygonEvent);
+          google.maps.event.addListener(this.map.polygon.getPath(), 'insert_at', polygonEvent);
         }, 500)
       },
       getData() {
@@ -195,6 +204,11 @@
       orderDataItemToLocale(data) {
         let orderData = this.$clone(data)
         this.locale.form = this.$clone(orderData)
+        let pointItems = []
+        for (let x in this.locale.form.points){
+          pointItems.push(this.locale.form.points[x])
+        }
+        this.locale.form.points = pointItems
       },
       async updateItem() {
         if (await this.$refs.localeComponent.validateForm()) {

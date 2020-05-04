@@ -287,6 +287,7 @@
           let configName = 'apiRoutes.qlocations.geozones'
           this.$crud.create(configName, this.getDataForm()).then(response => {
             this.$alert.success({message: `${this.$tr('ui.message.recordCreated')}`})
+            this.$router.push({name: 'qlocations.admin.geozones.index'})
             //this.initForm()
             this.loading = false
           }).catch(error => {

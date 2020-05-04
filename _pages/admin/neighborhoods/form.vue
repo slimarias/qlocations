@@ -159,6 +159,7 @@
           let configName = 'apiRoutes.qlocations.neighborhoods'
           this.$crud.create(configName, this.getDataForm()).then(response => {
             this.$alert.success({message: `${this.$tr('ui.message.recordCreated')}`})
+            this.$router.push({name: 'qlocations.admin.neighborhoods.index'})
             //this.initForm()
             this.loading = false
           }).catch(error => {

@@ -140,6 +140,7 @@
           let configName = 'apiRoutes.qlocations.cities'
           this.$crud.update(configName, this.itemId, this.getDataForm()).then(response => {
             this.$alert.success({message: `${this.$tr('ui.message.recordUpdated')}`})
+            this.$router.push({name: 'qlocations.admin.cities.index'})
             //this.initForm()
             this.loading = false
           }).catch(error => {

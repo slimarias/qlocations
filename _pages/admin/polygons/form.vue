@@ -104,10 +104,10 @@
           //location
           let latitude = 4.4408112
           let longitude = -75.223417
-          let OLD = this.locale.form.points[0] || new google.maps.LatLng(latitude, longitude)
+          let OLD = this.locale.form.points[this.locale.form.points.length-1] || new google.maps.LatLng(latitude, longitude)
           //MAP
           this.map.class = new google.maps.Map(document.getElementById('map'), {
-            zoom: 16,
+            zoom: 15,
             mapTypeId: google.maps.MapTypeId.ROADMAP,
             center: OLD,
           });

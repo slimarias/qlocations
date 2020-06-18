@@ -73,6 +73,11 @@
         mapApiKey: this.$store.getters['qsiteSettings/getSettingValueByName']('isite::api-maps'),
       }
     },
+    props:{
+      id:{
+        default: null
+      }
+    },
     computed: {
       dataLocale() {
         return {
@@ -91,7 +96,7 @@
         this.loading = true
         this.success = false
         this.locale = this.$clone(this.dataLocale)
-        this.itemId = this.$route.params.id
+        this.itemId = this.id !==null?this.id:this.$route.params.id
         if (this.locale.success) this.$refs.localeComponent.vReset()
         await this.getData()
         gmaps.initializeGoogleApi(this.mapApiKey)

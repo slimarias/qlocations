@@ -37,7 +37,7 @@
                       use-input
                       clearable
                       option-label="label"
-                      @change="getProvinces"
+                      @blur="getProvinces"
                       @filter="(val, update)=>update(()=>{countriesOptions = $helper.filterOptions(val,countries,locale.formTemplate.countryId)})"
                       :rules="[val => !!val || $tr('ui.message.fieldRequired')]"
                   />

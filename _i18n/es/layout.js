@@ -17,6 +17,7 @@ export default {
     city: 'Ciudad',
     polygon: 'Polígono',
     neighborhood: 'Barrio',
+    geozone: 'Geo Zona',
     provinces: 'Departamentos/Provincias/Estados',
     countries: 'Países',
     cities: 'Ciudades',

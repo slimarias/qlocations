@@ -54,7 +54,7 @@
                       :label="$tr('qlocations.layout.form.province')"
                       map-options
                       emit-value
-                      use-
+                      use-input
                       @change="getCities"
                       @filter="(val, update)=>update(()=>{provincesOptions = $helper.filterOptions(val,provinces,locale.formTemplate.provinceId)})"
                       option-label="label"

@@ -31,7 +31,7 @@
                       map-options
                       emit-value
                       use-input
-                      @change="getProvinces"
+                      @blur="getProvinces"
                       @filter="(val, update)=>update(()=>{countriesOptions = $helper.filterOptions(val,countries,locale.formTemplate.countryId)})"
                       option-label="label"
                   />
@@ -55,7 +55,7 @@
                       map-options
                       emit-value
                       use-input
-                      @change="getCities"
+                      @blur="getCities"
                       @filter="(val, update)=>update(()=>{provincesOptions = $helper.filterOptions(val,provinces,locale.formTemplate.provinceId)})"
                       option-label="label"
                   />

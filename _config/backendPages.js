@@ -10,6 +10,9 @@ export default {
     title: 'qlocations.sidebar.adminCountries',
     icon: 'fas fa-globe-americas',
     authenticated: true,
+    subHeader:{
+      refresh: true,
+    }
   },
   provinces: {
     permission: 'ilocations.provinces.index',
@@ -21,6 +24,9 @@ export default {
     title: 'qlocations.sidebar.adminProvinces',
     icon: 'fas fa-globe-americas',
     authenticated: true,
+    subHeader:{
+      refresh: true,
+    }
   },
   //Cities
   cities: {
@@ -33,6 +39,9 @@ export default {
     title: 'qlocations.sidebar.adminCities',
     icon: 'fas fa-building',
     authenticated: true,
+    subHeader:{
+      refresh: true,
+    }
   },
   //City create
   cityCreate: {
@@ -69,6 +78,9 @@ export default {
     title: 'qlocations.sidebar.adminPolygons',
     icon: 'fas fa-draw-polygon',
     authenticated: true,
+    subHeader:{
+      refresh: true,
+    }
   },
   //Polygon create
   polygonCreate: {
@@ -77,7 +89,7 @@ export default {
     path: '/locations/polygons/create',
     name: 'qlocations.admin.polygons.create',
     page: () => import('@imagina/qlocations/_pages/admin/polygons/form'),
-    layout: () => import('@imagina/qlocations/_layouts/polygons.vue'),
+    layout: () => import('@imagina/qsite/_layouts/master.vue'),
     title: 'qlocations.sidebar.adminPolygonCreate',
     icon: 'fas fa-draw-polygon',
     authenticated: true,
@@ -89,7 +101,7 @@ export default {
     path: '/locations/polygons/:id',
     name: 'qlocations.admin.polygons.edit',
     page: () => import('@imagina/qlocations/_pages/admin/polygons/form'),
-    layout: () => import('@imagina/qlocations/_layouts/polygons.vue'),
+    layout: () => import('@imagina/qsite/_layouts/master.vue'),
     title: 'qlocations.sidebar.adminPolygonEdit',
     icon: 'fas fa-draw-polygon',
     authenticated: true,
@@ -105,6 +117,9 @@ export default {
     title: 'qlocations.sidebar.adminGeozones',
     icon: 'fas fa-map-marker-alt',
     authenticated: true,
+    subHeader:{
+      refresh: true,
+    }
   },
   //Geozone create
   geozoneCreate: {
@@ -141,6 +156,9 @@ export default {
     title: 'qlocations.sidebar.adminNeighborhoods',
     icon: 'fas fa-home',
     authenticated: true,
+    subHeader:{
+      refresh: true,
+    }
   },
   //Polygon create
   neighborhoodCreate: {

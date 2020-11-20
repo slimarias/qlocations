@@ -25,73 +25,39 @@
           <div class="row q-col-gutter-md q-py-md">
             <div class="col-12 col-md-6">
               <!--Crud countries-->
-              <div class="row q-col-gutter-md">
-                <div class="col-8 col-md-10">
-                  <q-select
-                          outlined
-                          dense
-                          multiple
-                          use-chips
-                          v-model="locale.formTemplate.countries"
-                          :options="countriesOptions"
-                          :label="$tr('qlocations.layout.form.countries')"
-                          map-options
-                          emit-value
-                          use-input
-                          @filter="(val, update)=>update(()=>{countriesOptions = $helper.filterOptions(val,countries,locale.formTemplate.countries)})"
-                          option-label="label"
+                  <crud
+                      ref="countries"
+                      :crud-data="import('@imagina/qlocations/_crud/countries')"
+                      v-model="locale.formTemplate.countries" type="select"
+                      :crud-props="{label : `${$tr('qlocations.layout.form.countries')} *`, clearable: true, multiple: true, rules: [val => !!val || $tr('ui.message.fieldRequired')]}"
+                      :config="{options : {label : 'name', value : 'id'}}"
                   />
-                </div>
-                <div class="col-2 text-right">
-                  <crud :crud-data="import('@imagina/qlocations/_crud/countries')" type="button-create" />
-                </div>
-              </div>
             </div>
             <div class="col-12 col-md-6">
               <!--Crud provinces-->
-              <div class="row q-col-gutter-md">
-                <div class="col-8 col-md-10">
-                  <q-select
-                    outlined
-                    dense
-                    multiple
-                    use-chips
-                    v-model="locale.formTemplate.provinces"
-                    :options="provincesOptions"
-                    :label="$tr('qlocations.layout.form.provinces')"
-                    map-options
-                    emit-value
-                    use-input
-                    @filter="(val, update)=>update(()=>{provincesOptions = $helper.filterOptions(val,provinces,locale.formTemplate.provinces)})"
-                    option-label="label"
-                  />
-                </div>
-                <div class="col-2 text-right">
-                  <crud :crud-data="import('@imagina/qlocations/_crud/provinces')" type="button-create" />
-                </div>
-              </div>
+              <crud
+                  ref="provinces"
+                  :crud-data="import('@imagina/qlocations/_crud/provinces')"
+                  v-model="locale.formTemplate.provinces" type="select"
+                  :crud-props="{label : `${$tr('qlocations.layout.form.provinces')} *`, clearable: true, rules: [val => !!val || $tr('ui.message.fieldRequired')]}"
+                  :config="{options : {label : 'name', value : 'id'}}"
+              />
             </div>
             <div class="col-12 col-md-6">
-              <!--Crud cities-->
               <div class="row q-col-gutter-md">
                 <div class="col-8 col-md-10">
-                  <q-select
-                    outlined
-                    dense
-                    multiple
-                    use-chips
-                    v-model="locale.formTemplate.cities"
-                    :options="citiesOptions"
-                    :label="$tr('qlocations.layout.form.cities')"
-                    map-options
-                    emit-value
-                    use-input
-                    @filter="(val, update)=>update(()=>{citiesOptions = $helper.filterOptions(val,cities,locale.formTemplate.cities)})"
-                    option-label="label"
+                  <!--Crud cities-->
+                  <crud
+                      ref="cities"
+                      :crud-data="import('@imagina/qlocations/_crud/cities')"
+                      v-model="locale.formTemplate.cities" type="select"
+                      :crud-props="{label : `${$tr('qlocations.layout.form.cities')} *`, clearable: true, rules: [val => !!val || $tr('ui.message.fieldRequired')]}"
+                      :custom-data="{create: false}"
+                      :config="{options : {label : 'name', value : 'id'}}"
                   />
                 </div>
-                <div class="col-2 text-right">
-                  <q-btn size="md" class="btn-small" color="positive" icon="fas fa-plus" @click="showCityCreate = true">
+                <div class="col-4 col-md-2 text-right">
+                  <q-btn size="sm" class="btn-small" color="positive" icon="fas fa-plus" @click="showCityCreate = true">
                     <q-tooltip :offset="[10, 10]">
                       {{ $tr('qlocations.layout.newCity') }}
                     </q-tooltip>
@@ -103,19 +69,13 @@
               <!--Crud neighborhoods-->
               <div class="row q-col-gutter-md">
                 <div class="col-8 col-md-10">
-                  <q-select
-                      outlined
-                      dense
-                      multiple
-                      use-chips
-                      v-model="locale.formTemplate.neighborhoods"
-                      :options="neighborhoodsOptions"
-                      :label="$tr('qlocations.layout.form.neighborhoods')"
-                      map-options
-                      emit-value
-                      use-input
-                      @filter="(val, update)=>update(()=>{neighborhoodsOptions = $helper.filterOptions(val,neighborhoods,locale.formTemplate.neighborhoods)})"
-                      option-label="label"
+                  <crud
+                      ref="neighborhoods"
+                      :crud-data="import('@imagina/qlocations/_crud/neighborhoods')"
+                      v-model="locale.formTemplate.neighborhoods" type="select"
+                      :crud-props="{label : `${$tr('qlocations.layout.form.neighborhoods')} *`, clearable: true, multiple: true, rules: [val => !!val || $tr('ui.message.fieldRequired')]}"
+                      :custom-data="{create: false}"
+                      :config="{options : {label : 'name', value : 'id'}, requestParams: {filter: {province_id: locale.formTemplate.provinceId}}}"
                   />
                 </div>
                 <div class="col-2 text-right">
@@ -131,19 +91,13 @@
               <!--Crud polygons-->
               <div class="row q-col-gutter-md">
                 <div class="col-8 col-md-10">
-                  <q-select
-                      outlined
-                      dense
-                      multiple
-                      use-chips
-                      v-model="locale.formTemplate.polygons"
-                      :options="polygonsOptions"
-                      :label="$tr('qlocations.layout.form.polygons')"
-                      map-options
-                      emit-value
-                      use-input
-                      @filter="(val, update)=>update(()=>{polygonsOptions = $helper.filterOptions(val,polygonsOptions,locale.formTemplate.polygons)})"
-                      option-label="label"
+                  <crud
+                      ref="cities"
+                      :crud-data="import('@imagina/qlocations/_crud/polygons')"
+                      v-model="locale.formTemplate.polygons" type="select"
+                      :crud-props="{label : `${$tr('qlocations.layout.form.polygons')} *`, clearable: true, multiple: true, rules: [val => !!val || $tr('ui.message.fieldRequired')]}"
+                      :custom-data="{create: false}"
+                      :config="{options : {label : 'name', value : 'id'}}"
                   />
                 </div>
                 <div class="col-2 text-right">
@@ -244,16 +198,6 @@
     data() {
       return {
         locale: {},
-        countriesOptions: [],
-        provincesOptions: [],
-        citiesOptions: [],
-        neighborhoodsOptions: [],
-        polygonsOptions: [],
-        countries: [],
-        provinces: [],
-        cities: [],
-        neighborhoods: [],
-        polygons: [],
         loading: false,
         success: false,
         itemId: false,
@@ -291,11 +235,6 @@
         this.locale = this.$clone(this.dataLocale)
         this.itemId = this.id !==null?this.id:this.$route.params.id
         if (this.locale.success) this.$refs.localeComponent.vReset()
-        this.getCountries()
-        this.getProvinces()
-        this.getCities()
-        this.getNeighborhoods()
-        this.getPolygons()
         await this.getData()
         this.success = true
         this.loading = false
@@ -359,62 +298,6 @@
             this.$alert.error({message: this.$tr('ui.message.recordNoUpdated'), pos: 'bottom'})
           })
         }
-      },
-      //Search countries
-      getCountries() {
-        let configName = 'apiRoutes.qlocations.countries'
-        //Request
-        this.$crud.index(configName).then(response => {
-          this.countries = this.$array.select(response.data, { label: 'name', id: 'id' })
-          this.countriesOptions = this.$clone(this.countries)
-        }).catch(error => {
-          this.$alert.error({message: this.$tr('ui.message.errorRequest'), pos: 'bottom'})
-        })
-      },
-      //Search provinces
-      getProvinces() {
-        let configName = 'apiRoutes.qlocations.provinces'
-        //Request
-        this.$crud.index(configName).then(response => {
-          this.provinces = this.$array.select(response.data, { label: 'name', id: 'id' })
-          this.provincesOptions = this.$clone(this.provinces)
-        }).catch(error => {
-          this.$alert.error({message: this.$tr('ui.message.errorRequest'), pos: 'bottom'})
-        })
-      },
-      //Search cities
-      getCities(){
-        let configName = 'apiRoutes.qlocations.cities'
-        //Request
-        this.$crud.index(configName).then(response => {
-          this.cities =  this.$array.select(response.data, { label: 'name', id: 'id' })
-          this.citiesOptions = this.$clone(this.cities)
-        }).catch(error => {
-          this.$alert.error({message: this.$tr('ui.message.errorRequest'), pos: 'bottom'})
-        })
-      },
-
-      //Get neighborhoods
-      getNeighborhoods() {
-        let configName = 'apiRoutes.qlocations.neighborhoods'
-        //Request
-        this.$crud.index(configName).then(response => {
-          this.neighborhoods = this.$array.select(response.data, { label: 'name', id: 'id' })
-          this.neighborhoodsOptions = this.$clone(this.neighborhoods)
-        }).catch(error => {
-          this.$alert.error({message: this.$tr('ui.message.errorRequest'), pos: 'bottom'})
-        })
-      },
-      //Search polygons
-      getPolygons() {
-        let configName = 'apiRoutes.qlocations.polygons'
-        //Request
-        this.$crud.index(configName).then(response => {
-          this.polygons = this.$array.select(response.data, { label: 'name', id: 'id' })
-          this.polygonsOptions = this.$clone(this.polygons)
-        }).catch(error => {
-          this.$alert.error({message: this.$tr('ui.message.errorRequest'), pos: 'bottom'})
-        })
       },
       async createItem() {
         if (await this.$refs.localeComponent.validateForm()) {

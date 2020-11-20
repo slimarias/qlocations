@@ -22,9 +22,12 @@
               </q-field>
             </div>
             <div class="col-12">
-              <q-no-ssr>
-                <div id="map" class="full-width" style="height:300px"></div>
-              </q-no-ssr>
+              <l-map :draw-control="true" id="lMap" :zoom="mapZoom" :center="center"
+                     :style="`height : 300px`" ref="map">
+                <l-tile-layer name="OpenStreetMap" layer-type="base" :token="token"
+                              attribution='&copy; <a target="_blank" href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+                              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"/>
+              </l-map>
             </div>
           </div>
           <q-page-sticky
@@ -45,9 +48,12 @@
 </template>
 
 <script>
-  import {gmaps} from '@imagina/qlocations/_plugins/gmaps'
+  import {latLng, Icon} from "leaflet";
+  import {LMap, LTileLayer, LMarker} from 'vue2-leaflet';
+  import 'leaflet/dist/leaflet.css';
   export default {
     components: {
+      LMap, LTileLayer, polygonDraw
     },
     watch: {
       $route(to, from) {
@@ -67,10 +73,11 @@
           polygon: null,
           drawing: null
         },
+        center: false,
+        mapZoom: 15,
         loading: false,
         success: false,
         itemId: false,
-        mapApiKey: this.$store.getters['qsiteSettings/getSettingValueByName']('isite::api-maps'),
       }
     },
     props:{
@@ -90,6 +97,9 @@
           }
         }
       },
+      token(){
+        this.$store.getters['qsiteApp/getSettingValueByName']('isite::api-maps')
+      }
     },
     methods: {
       async initForm() {
@@ -98,83 +108,10 @@
         this.locale = this.$clone(this.dataLocale)
         this.itemId = this.id !==null?this.id:this.$route.params.id
         if (this.locale.success) this.$refs.localeComponent.vReset()
+        this.center = ['4.642129714308486', '-74.11376953125001']//Default center
         await this.getData()
-        gmaps.initializeGoogleApi(this.mapApiKey)
-        this.initMap()
         this.success = true
         this.loading = false
-      },
-      initMap(){
-        setTimeout(() => {
-          //location
-          let latitude = 4.4408112
-          let longitude = -75.223417
-          let OLD = this.locale.form.points[this.locale.form.points.length-1] || new google.maps.LatLng(latitude, longitude)
-          //MAP
-          this.map.class = new google.maps.Map(document.getElementById('map'), {
-            zoom: 15,
-            mapTypeId: google.maps.MapTypeId.ROADMAP,
-            center: OLD,
-          });
-
-          let polyOptions = {
-            strokeColor: '#FF0000',
-            strokeOpacity: 0.8,
-            strokeWeight: 3,
-            fillColor: '#FF0000',
-            fillOpacity: 0.35,
-            editable: true
-          }
-
-          if(this.locale.form.points.length > 0){
-            polyOptions.paths = this.locale.form.points
-          }
-
-          this.map.drawing = new google.maps.drawing.DrawingManager({
-            drawingMode: google.maps.drawing.OverlayType.POLYGON,
-            drawingControl: true,
-            drawingControlOptions: {
-              position: google.maps.ControlPosition.TOP_CENTER,
-              drawingModes: ['polygon']
-            },
-            polygonOptions: polyOptions,
-
-          });
-          this.map.polygon = new google.maps.Polygon(polyOptions)
-
-          this.map.polygon.setMap(this.map.class)
-
-          this.map.drawing.setMap(this.map.class);
-          google.maps.event.addListener(this.map.drawing, 'overlaycomplete', (event) => {
-            let polygon = event.overlay
-            let points = []
-            let polPoints = polygon.getPath().getArray()
-            console.log(polPoints)
-            for(let x in polPoints){
-              points[x] = {
-                lat: polPoints[x].lat(),
-                lng: polPoints[x].lng(),
-              }
-            }
-            this.locale.form.points = points
-          })
-
-          let polygonEvent = ()=>{
-            let points = []
-            let polPoints = this.map.polygon.getPath().getArray()
-            console.log(polPoints)
-            for(let x in polPoints){
-              points[x] = {
-                lat: polPoints[x].lat(),
-                lng: polPoints[x].lng(),
-              }
-            }
-            this.locale.form.points = points
-          }
-
-          google.maps.event.addListener(this.map.polygon.getPath(), 'set_at', polygonEvent);
-          google.maps.event.addListener(this.map.polygon.getPath(), 'insert_at', polygonEvent);
-        }, 500)
       },
       getData() {
         return new Promise((resolve, reject) => {

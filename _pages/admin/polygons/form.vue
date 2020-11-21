@@ -22,11 +22,13 @@
               </q-field>
             </div>
             <div class="col-12">
-              <l-map :draw-control="true" id="lMap" :zoom="mapZoom" :center="center"
+              <l-map :draw-control="true" id="lMap" :zoom="mapZoom" :center="center" @draw:created="getPointValues"
                      :style="`height : 300px`" ref="map">
                 <l-tile-layer name="OpenStreetMap" layer-type="base" :token="token"
                               attribution='&copy; <a target="_blank" href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-                              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"/>
+                              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+                <polygon-drawer />
+                <l-polygon :lat-lngs="locale.formTemplate.points" />
               </l-map>
             </div>
           </div>
@@ -49,11 +51,17 @@
 
 <script>
   import {latLng, Icon} from "leaflet";
-  import {LMap, LTileLayer, LMarker} from 'vue2-leaflet';
+  import { LMap, LTileLayer, LLayerGroup, LPolygon } from 'vue2-leaflet';
   import 'leaflet/dist/leaflet.css';
+  import polygonDrawer from '@imagina/qlocations/_components/polygonDrawer'
+  import {mapGeolocationActions, mapGeolocationGetters} from "quasar-app-extension-geolocation/src/store";
   export default {
     components: {
-      LMap, LTileLayer, polygonDraw
+      LMap,
+      LTileLayer,
+      LLayerGroup,
+      LPolygon,
+      polygonDrawer,
     },
     watch: {
       $route(to, from) {
@@ -74,7 +82,7 @@
           drawing: null
         },
         center: false,
-        mapZoom: 15,
+        mapZoom: 14,
         loading: false,
         success: false,
         itemId: false,
@@ -90,6 +98,7 @@
         return {
           fields: {
             points: [],
+            options: {},
           },
           fieldsTranslatable: {
             name: '',
@@ -97,18 +106,31 @@
           }
         }
       },
+      ...mapGeolocationGetters([
+        'isPermissionKnown',
+        'isPermissionGranted',
+        'isPermissionPrompt',
+        'isPermissionDenied',
+        'hasPosition',
+        'coords',
+      ]),
       token(){
         this.$store.getters['qsiteApp/getSettingValueByName']('isite::api-maps')
       }
     },
     methods: {
+      getPointValues(e){
+        console.warn(e)
+        this.locale.form.points = e.layer.editing.latlngs
+      },
       async initForm() {
         this.loading = true
         this.success = false
         this.locale = this.$clone(this.dataLocale)
         this.itemId = this.id !==null?this.id:this.$route.params.id
         if (this.locale.success) this.$refs.localeComponent.vReset()
-        this.center = ['4.642129714308486', '-74.11376953125001']//Default center
+        this.getLocationPermisssions()
+        this.center = this.isPermissionDenied ? ['4.642129714308486', '-74.11376953125001'] : latLng(this.coords.latitude, this.coords.longitude)
         await this.getData()
         this.success = true
         this.loading = false
@@ -128,10 +150,6 @@
             //Request
             this.$crud.show(configName, itemId, params).then(response => {
               this.orderDataItemToLocale(response.data)
-              setTimeout(()=>{
-                this.locale.form.countryId = response.data.countryId
-                this.locale.form.provinceId = response.data.provinceId
-              },500)
               resolve(true)//Resolve
             }).catch(error => {
               this.$alert.error({message: this.$tr('ui.message.errorRequest'), pos: 'bottom'})
@@ -146,11 +164,9 @@
       orderDataItemToLocale(data) {
         let orderData = this.$clone(data)
         this.locale.form = this.$clone(orderData)
-        let pointItems = []
-        for (let x in this.locale.form.points){
-          pointItems.push(this.locale.form.points[x])
-        }
-        this.locale.form.points = pointItems
+        let pts = this.$clone(this.locale.form.points)
+        pts = pts.flat(3)
+        this.center = pts[pts.length - 1]
       },
       async updateItem() {
         if (await this.$refs.localeComponent.validateForm()) {
@@ -191,6 +207,29 @@
         //response.selectable = JSON.stringify(response.selectable)
         return response
       },
+      doQueryPermission () {
+        this.queryPermission()
+            .then(() => {
+              if (this.isPermissionDenied) {
+                // poll permission as the user might allow them in a separate tab
+                this.pollingTimer = setTimeout(() => this.doQueryPermission(), 2000)
+              } else if (this.pollingTimer) {
+                clearTimeout(this.pollingTimer)
+              }
+            })
+      },
+      getLocationPermisssions () {
+        this.samplePosition()
+            .catch(() => { })
+            .finally(() => {
+              // update permissions (as the user might have enabled them)
+              this.doQueryPermission()
+            })
+      },
+      ...mapGeolocationActions([
+        'samplePosition',
+        'queryPermission'
+      ])
     }
   }
 </script>

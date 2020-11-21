@@ -54,6 +54,9 @@ export default {
     title: 'qlocations.sidebar.adminCityCreate',
     icon: 'fas fa-building',
     authenticated: true,
+    subHeader: {
+      breadcrumb: ['qlocations.cities']
+    }
   },
   //City edit
   cityEdit: {
@@ -66,6 +69,9 @@ export default {
     title: 'qlocations.sidebar.adminCityEdit',
     icon: 'fas fa-building',
     authenticated: true,
+    subHeader: {
+      breadcrumb: ['qlocations.cities']
+    }
   },
   //Polygons
   polygons: {
@@ -93,6 +99,9 @@ export default {
     title: 'qlocations.sidebar.adminPolygonCreate',
     icon: 'fas fa-draw-polygon',
     authenticated: true,
+    subHeader: {
+      breadcrumb: ['qlocations.polygons']
+    }
   },
   //Polygon edit
   polygonEdit: {
@@ -105,6 +114,9 @@ export default {
     title: 'qlocations.sidebar.adminPolygonEdit',
     icon: 'fas fa-draw-polygon',
     authenticated: true,
+    subHeader: {
+      breadcrumb: ['qlocations.polygons']
+    }
   },
   //Geozones
   geozones: {
@@ -132,6 +144,9 @@ export default {
     title: 'qlocations.sidebar.adminGeozoneCreate',
     icon: 'fas fa-map-marker-alt',
     authenticated: true,
+    subHeader: {
+      breadcrumb: ['qlocations.gezones']
+    }
   },
   //Geozone edit
   geozoneEdit: {
@@ -144,6 +159,9 @@ export default {
     title: 'qlocations.sidebar.adminGeozoneEdit',
     icon: 'fas fa-map-marker-alt',
     authenticated: true,
+    subHeader: {
+      breadcrumb: ['qlocations.geozones']
+    }
   },
   //Neighborhoods
   neighborhoods: {
@@ -171,6 +189,9 @@ export default {
     title: 'qlocations.sidebar.adminNeighborhoodCreate',
     icon: 'fas fa-home',
     authenticated: true,
+    subHeader: {
+      breadcrumb: ['qlocations.neighborhoods']
+    }
   },
   //Polygon edit
   neighborhoodEdit: {
@@ -183,6 +204,9 @@ export default {
     title: 'qlocations.sidebar.adminNeighborhoodEdit',
     icon: 'fas fa-home',
     authenticated: true,
+    subHeader: {
+      breadcrumb: ['qlocations.neighborhoods']
+    }
   },
 
 }

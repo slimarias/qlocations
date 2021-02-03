@@ -1,7 +1,7 @@
 export default {
   //Product List
   countries: {
-    permission: 'ilocations.countries.index',
+    permission: 'ilocations.countries.manage',
     activated: true,
     path: '/locations/countries',
     name: 'qlocations.admin.countries.index',
@@ -16,7 +16,7 @@ export default {
     }
   },
   provinces: {
-    permission: 'ilocations.provinces.index',
+    permission: 'ilocations.provinces.manage',
     activated: true,
     path: '/locations/provinces',
     name: 'qlocations.admin.provinces.index',
@@ -32,7 +32,7 @@ export default {
   },
   //Cities
   cities: {
-    permission: 'ilocations.cities.index',
+    permission: 'ilocations.cities.manage',
     activated: true,
     path: '/locations/cities',
     name: 'qlocations.admin.cities.index',
@@ -72,7 +72,7 @@ export default {
   },
   //Polygons
   polygons: {
-    permission: 'ilocations.polygons.index',
+    permission: 'ilocations.polygons.manage',
     activated: true,
     path: '/locations/polygons',
     name: 'qlocations.admin.polygons.index',
@@ -109,7 +109,7 @@ export default {
   },
   //Geozones
   geozones: {
-    permission: 'ilocations.geozones.index',
+    permission: 'ilocations.geozones.manage',
     activated: true,
     path: '/locations/geozones',
     name: 'qlocations.admin.geozones.index',
@@ -146,7 +146,7 @@ export default {
   },
   //Neighborhoods
   neighborhoods: {
-    permission: 'ilocations.neighborhoods.index',
+    permission: 'ilocations.neighborhoods.manage',
     activated: true,
     path: '/locations/neighborhoods',
     name: 'qlocations.admin.neighborhoods.index',

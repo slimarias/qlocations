@@ -25,47 +25,24 @@
             <div class="col-12">
               <!--Crud countries-->
               <div class="row q-col-gutter-md">
-                <div class="col-8 col-md-10">
-                  <q-select
-                      outlined
-                      dense
-                      v-model="locale.formTemplate.countryId"
-                      :options="countriesOptions"
-                      :label="$tr('qlocations.layout.form.country')"
-                      map-options
-                      emit-value
-                      use-input
-                      clearable
-                      option-label="label"
-                      @change="getProvinces"
-                      @filter="(val, update)=>update(()=>{countriesOptions = $helper.filterOptions(val,countries,locale.formTemplate.countryId)})"
-                      :rules="[val => !!val || $tr('ui.message.fieldRequired')]"
+                <div class="col-12 col-sm-6">
+                  <crud
+                      ref="countries"
+                      :crud-data="import('@imagina/qlocations/_crud/countries')"
+                      v-model="locale.formTemplate.countryId" type="select"
+                      :crud-props="{label : `${$tr('qlocations.layout.form.country')} *`, clearable: true, rules: [val => !!val || $tr('ui.message.fieldRequired')]}"
+                      :config="{options : {label : 'name', value : 'id'}}"
+                      @input="()=> { if(locale.formTemplate.countryId) $refs.provinces.init() }"
                   />
                 </div>
-                <div class="col-2 text-right">
-                  <crud :crud-data="import('@imagina/qlocations/_crud/countries')" type="button-create" />
-                </div>
-              </div>
-              <div class="row q-col-gutter-md">
-                <!--Crud provinces-->
-                <div class="col-8 col-md-10">
-                  <q-select
-                      outlined
-                      dense
-                      v-model="locale.formTemplate.provinceId"
-                      :options="provincesOptions"
-                      :label="$tr('qlocations.layout.form.provinces')"
-                      map-options
-                      emit-value
-                      use-input
-                      clearable
-                      option-label="label"
-                      @filter="(val, update)=>update(()=>{provincesOptions = $helper.filterOptions(val,provinces,locale.formTemplate.provinceId)})"
-                      :rules="[val => !!val || $tr('ui.message.fieldRequired')]"
+                <div class="col-12 col-sm-6">
+                  <crud
+                      ref="provinces"
+                      :crud-data="import('@imagina/qlocations/_crud/provinces')"
+                      v-model="locale.formTemplate.provinceId" type="select"
+                      :crud-props="{label : `${$tr('qlocations.layout.form.province')} *`, clearable: true, rules: [val => !!val || $tr('ui.message.fieldRequired')]}"
+                      :config="{options : {label : 'name', value : 'id'}, requestParams: {filter: {country: locale.formTemplate.countryId}}}"
                   />
-                </div>
-                <div class="col-2 text-right">
-                  <crud :crud-data="import('@imagina/qlocations/_crud/provinces')" type="button-create" />
                 </div>
               </div>
             </div>
@@ -94,7 +71,7 @@
     },
     watch: {
       $route(to, from) {
-        this.initForm()
+        this.initForm(true)
       }
     },
     mounted() {
@@ -105,11 +82,9 @@
     data() {
       return {
         locale: {},
-        countries: [],
-        provinces: [],
-        countriesOptions: [],
-        provincesOptions: [],
         loading: false,
+        countryLoading: false,
+        provinceLoading: false,
         success: false,
         itemId: false,
       }
@@ -134,25 +109,24 @@
       },
     },
     methods: {
-      async initForm() {
+      async initForm(refresh = false) {
         this.loading = true
         this.success = false
         this.locale = this.$clone(this.dataLocale)
         this.itemId = this.id !==null?this.id:this.$route.params.id
         if (this.locale.success) this.$refs.localeComponent.vReset()
-        this.getCountries()
-        await this.getData()
+        await this.getData(refresh)
         this.success = true
         this.loading = false
       },
-      getData() {
+      getData(refresh = false) {
         return new Promise((resolve, reject) => {
           const itemId = this.$clone(this.itemId)
           if (itemId) {
             let configName = 'apiRoutes.qlocations.cities'
             //Params
             let params = {
-              refresh: true,
+              refresh: refresh,
               params: {
                 include: 'province,country',
                 filter: {allTranslations: true}
@@ -161,7 +135,7 @@
             //Request
             this.$crud.show(configName, itemId, params).then(response => {
               this.orderDataItemToLocale(response.data)
-              this.locale.form.countryId = parseInt(response.data.countryId)
+              //this.locale.form.countryId = parseInt(response.data.countryId)
               this.locale.form.provinceId = parseInt(response.data.provinceId)
               this.getProvinces()
               resolve(true)//Resolve
@@ -207,36 +181,6 @@
             this.$alert.error({message: this.$tr('ui.message.recordNoUpdated'), pos: 'bottom'})
           })
         }
-      },
-      //Search countries
-      getCountries() {
-        let configName = 'apiRoutes.qlocations.countries'
-        //Request
-        this.$crud.index(configName).then(response => {
-          this.countries = this.$array.select(response.data, { label: 'name', id: 'id' })
-          this.countriesOptions = this.$clone(this.countries)
-        }).catch(error => {
-          this.$alert.error({message: this.$tr('ui.message.errorRequest'), pos: 'bottom'})
-        })
-      },
-      //Search provinces
-      getProvinces() {
-        let configName = 'apiRoutes.qlocations.provinces'
-        //Request
-        let params = {
-          params:{
-            filter: {allTranslations: true}
-          }
-        }
-        if(typeof this.locale.form.countryId != 'undefined'){
-          params.params.filter.country = this.locale.form.countryId
-        }
-        this.$crud.index(configName,params).then(response => {
-          this.provinces = this.$array.select(response.data, { label: 'name', id: 'id' })
-          this.provincesOptions = this.$clone(this.provinces)
-        }).catch(error => {
-          this.$alert.error({message: this.$tr('ui.message.errorRequest'), pos: 'bottom'})
-        })
       },
       getDataForm() {
         let response = this.locale.form

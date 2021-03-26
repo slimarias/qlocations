@@ -22,92 +22,86 @@
               </q-field>
             </div>
           </div>
-          <div class="row q-col-gutter-md q-py-md">
-            <div class="col-12 col-md-6">
-              <!--Crud countries-->
-                  <crud
-                      ref="countries"
-                      :crud-data="import('@imagina/qlocations/_crud/countries')"
-                      v-model="locale.formTemplate.countries" type="select"
-                      :crud-props="{label : `${$tr('qlocations.layout.form.countries')} *`, clearable: true, multiple: true, rules: [val => !!val || $tr('ui.message.fieldRequired')]}"
-                      :config="{options : {label : 'name', value : 'id'}}"
-                  />
+          <div class="q-py-sm">
+            <div class="text-right">
+              <q-btn color="positive" icon="fas fa-plus" @click="addGeozonables" />
             </div>
-            <div class="col-12 col-md-6">
-              <!--Crud provinces-->
-              <crud
-                  ref="provinces"
-                  :crud-data="import('@imagina/qlocations/_crud/provinces')"
-                  v-model="locale.formTemplate.provinces" type="select"
-                  :crud-props="{label : `${$tr('qlocations.layout.form.provinces')} *`, clearable: true, rules: [val => !!val || $tr('ui.message.fieldRequired')]}"
-                  :config="{options : {label : 'name', value : 'id'}}"
-              />
-            </div>
-            <div class="col-12 col-md-6">
-              <div class="row q-col-gutter-md">
-                <div class="col-8 col-md-10">
-                  <!--Crud cities-->
-                  <crud
-                      ref="cities"
-                      :crud-data="import('@imagina/qlocations/_crud/cities')"
-                      v-model="locale.formTemplate.cities" type="select"
-                      :crud-props="{label : `${$tr('qlocations.layout.form.cities')} *`, clearable: true, rules: [val => !!val || $tr('ui.message.fieldRequired')]}"
-                      :custom-data="{create: false}"
-                      :config="{options : {label : 'name', value : 'id'}}"
-                  />
+            <div v-for="(item, index) in locale.form.zonesToGeozone">
+                <div class="row q-col-gutter-sm">
+                  <div class="col-3">
+                    <dynamic-field
+                        v-model="item.countryId"
+                        :field="{
+                          value: '',
+                          type: 'select',
+                          loadOptions: {
+                            apiRoute: 'apiRoutes.qlocations.countries',
+                            select: {label: 'name', id: 'id'},
+                          },
+                          props : {
+                            clearable: true,
+                            label: `${$tr('qlocations.layout.form.country')}*`,
+                            rules: [val => !!val || $tr('ui.message.fieldRequired')]
+                          }
+                        }"
+                    />
+                  </div>
+                  <div class="col-3">
+                    <dynamic-field
+                        v-if="item.countryId > 0"
+                        v-model="item.provinceId"
+                        :field="{
+                          value: '0',
+                          type: 'select',
+                          loadOptions: {
+                            apiRoute: 'apiRoutes.qlocations.provinces',
+                            requestParams: {
+                             filter: {
+                               country: item.countryId
+                             }
+                            },
+                            select: {label: 'name', id: 'id'},
+                          },
+                          props : {
+                            clearable: true,
+                            label: `${$tr('qlocations.layout.form.province')}*`,
+                            options:[{
+                              label: $trp('ui.label.all'), value: '0'
+                            }],
+                          }
+                        }"
+                    />
+                  </div>
+                  <div class="col-4">
+                    <dynamic-field
+                        v-if="item.provinceId > 0"
+                        v-model="item.cityId"
+                        :field="{
+                          value: '0',
+                          type: 'select',
+                          loadOptions: {
+                            apiRoute: 'apiRoutes.qlocations.cities',
+                            requestParams: {
+                             filter: {
+                               provinceId: item.provinceId
+                             }
+                            },
+                            select: {label: 'name', id: 'id'},
+                          },
+                          props : {
+                            clearable: true,
+                            label: `${$tr('qlocations.layout.form.city')}*`,
+                            options:[{
+                              label: $trp('ui.label.all'), value: '0'
+                            }],
+                          }
+                        }"
+                    />
+                  </div>
+                  <div class="col-2">
+                    <q-btn color="negative" icon="fas fa-trash" @click="deleteGeozonable(index)" />
+                  </div>
                 </div>
-                <div class="col-4 col-md-2 text-right">
-                  <q-btn size="sm" class="btn-small" color="positive" icon="fas fa-plus" @click="showCityCreate = true">
-                    <q-tooltip :offset="[10, 10]">
-                      {{ $tr('qlocations.layout.newCity') }}
-                    </q-tooltip>
-                  </q-btn>
-                </div>
-              </div>
-            </div>
-            <div class="col-12 col-md-6">
-              <!--Crud neighborhoods-->
-              <div class="row q-col-gutter-md">
-                <div class="col-8 col-md-10">
-                  <crud
-                      ref="neighborhoods"
-                      :crud-data="import('@imagina/qlocations/_crud/neighborhoods')"
-                      v-model="locale.formTemplate.neighborhoods" type="select"
-                      :crud-props="{label : `${$tr('qlocations.layout.form.neighborhoods')} *`, clearable: true, multiple: true, rules: [val => !!val || $tr('ui.message.fieldRequired')]}"
-                      :custom-data="{create: false}"
-                      :config="{options : {label : 'name', value : 'id'}, requestParams: {filter: {province_id: locale.formTemplate.provinceId}}}"
-                  />
-                </div>
-                <div class="col-2 text-right">
-                  <q-btn size="md" class="btn-small" color="positive" icon="fas fa-plus" @click="showNeighborhoodCreate = true">
-                    <q-tooltip :offset="[10, 10]">
-                      {{ $tr('qlocations.layout.newNeighborhood') }}
-                    </q-tooltip>
-                  </q-btn>
-                </div>
-              </div>
-            </div>
-            <div class="col-12 col-md-6">
-              <!--Crud polygons-->
-              <div class="row q-col-gutter-md">
-                <div class="col-8 col-md-10">
-                  <crud
-                      ref="cities"
-                      :crud-data="import('@imagina/qlocations/_crud/polygons')"
-                      v-model="locale.formTemplate.polygons" type="select"
-                      :crud-props="{label : `${$tr('qlocations.layout.form.polygons')} *`, clearable: true, multiple: true, rules: [val => !!val || $tr('ui.message.fieldRequired')]}"
-                      :custom-data="{create: false}"
-                      :config="{options : {label : 'name', value : 'id'}}"
-                  />
-                </div>
-                <div class="col-2 text-right">
-                  <q-btn size="md" class="btn-small" color="positive" icon="fas fa-plus" @click="showPolygonCreate = true">
-                    <q-tooltip :offset="[10, 10]">
-                      {{ $tr('qlocations.layout.newPolygon') }}
-                    </q-tooltip>
-                  </q-btn>
-                </div>
-              </div>
             </div>
           </div>
           <q-page-sticky
@@ -124,54 +118,6 @@
       </div>
       <inner-loading :visible="loading"/>
     </div>
-    <q-dialog content-class="modal-form-crud" @hide="getCities"
-              v-model="showCityCreate" v-if="showCityCreate" no-esc-dismiss no-backdrop-dismiss>
-      <q-card class="bg-grey-1 backend-page row" style="max-width: 80vw!important;">
-        <!--Header-->
-        <q-toolbar class="bg-primary text-white">
-          <q-toolbar-title>
-            <label>{{$tr('qlocations.layout.newCity')}}</label>
-          </q-toolbar-title>
-          <q-btn flat v-close-popup icon="fas fa-times"/>
-        </q-toolbar>
-        <!--Content-->
-        <q-card-section class="relative-position col-12">
-          <cityForm :id="false" />
-        </q-card-section>
-      </q-card>
-    </q-dialog>
-    <q-dialog content-class="modal-form-crud" @hide="getPolygons"
-              v-model="showPolygonCreate" v-if="showPolygonCreate" no-esc-dismiss no-backdrop-dismiss>
-      <q-card class="bg-grey-1 backend-page row" style="max-width: 80vw!important;">
-        <!--Header-->
-        <q-toolbar class="bg-primary text-white">
-          <q-toolbar-title>
-            <label>{{$tr('qlocations.layout.newPolygon')}}</label>
-          </q-toolbar-title>
-          <q-btn flat v-close-popup icon="fas fa-times"/>
-        </q-toolbar>
-        <!--Content-->
-        <q-card-section class="relative-position col-12">
-          <polygonForm :id="false" />
-        </q-card-section>
-      </q-card>
-    </q-dialog>
-    <q-dialog content-class="modal-form-crud" @hide="getNeighborhoods"
-              v-model="showNeighborhoodCreate" v-if="showNeighborhoodCreate" no-esc-dismiss no-backdrop-dismiss>
-      <q-card class="bg-grey-1 backend-page row" style="max-width: 80vw!important;">
-        <!--Header-->
-        <q-toolbar class="bg-primary text-white">
-          <q-toolbar-title>
-            <label>{{$tr('qlocations.layout.newNeighborhood')}}</label>
-          </q-toolbar-title>
-          <q-btn flat v-close-popup icon="fas fa-times"/>
-        </q-toolbar>
-        <!--Content-->
-        <q-card-section class="relative-position col-12">
-          <neighborhoodForm :id="false" />
-        </q-card-section>
-      </q-card>
-    </q-dialog>
   </div>
 </template>
 
@@ -193,6 +139,7 @@
     mounted() {
       this.$nextTick(function () {
         this.initForm()
+        this.$root.$on('page.data.refresh', () => this.initForm())
       })
     },
     data() {
@@ -204,6 +151,7 @@
         showCityCreate: false,
         showPolygonCreate: false,
         showNeighborhoodCreate: false,
+        geozonables:[]
       }
     },
     props:{
@@ -222,11 +170,19 @@
             cities: [],
             polygons: [],
             neighborhoods: [],
+            zonesToGeozone: []
           },
           fieldsTranslatable: {
           }
         }
       },
+      defaultGeozonable(){
+        return {
+          countryId: '',
+          provinceId: '0',
+          cityId: '0',
+        }
+      }
     },
     methods: {
       async initForm() {
@@ -248,30 +204,23 @@
             let params = {
               refresh: true,
               params: {
-                include: 'provinces,countries,cities,polygons,neighborhoods',
+                include: 'zonesToGeozone,zonesToGeozone.province,zonesToGeozone.country,zonesToGeozone.city',
                 filter: {allTranslations: true}
               }
             }
             //Request
             this.$crud.show(configName, itemId, params).then(response => {
               this.orderDataItemToLocale(response.data)
-              this.locale.form.countries = response.data.countries.map(item =>{
-                return item.id
-              })
-              this.locale.form.provinces = response.data.provinces.map(item =>{
-                return item.id
-              })
-              this.locale.form.cities = response.data.cities.map(item =>{
-                return item.id
-              })
-              this.locale.form.neighborhoods = response.data.neighborhoods.map(item =>{
+              let geozones = this.$clone(response.data.zonesToGeozone)
+              /*this.locale.form.neighborhoods = response.data.neighborhoods.map(item =>{
                 return item.id
               })
               this.locale.form.polygons = response.data.polygons.map(item =>{
                 return item.id
-              })
+              })*/
               resolve(true)//Resolve
             }).catch(error => {
+              console.error(error)
               this.$alert.error({message: this.$tr('ui.message.errorRequest'), pos: 'bottom'})
               this.loading = false
               reject(false)//Resolve
@@ -323,6 +272,12 @@
         }
         response.selectable = JSON.stringify(response.selectable)
         return response
+      },
+      addGeozonables(){
+        this.locale.form.zonesToGeozone.push(this.defaultGeozonable)
+      },
+      deleteGeozonable(index){
+        this.locale.form.zonesToGeozone.splice(index,1)
       },
     }
   }

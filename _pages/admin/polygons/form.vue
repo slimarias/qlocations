@@ -71,6 +71,7 @@
     mounted() {
       this.$nextTick(function () {
         this.initForm()
+        this.$root.$on('page.data.refresh', () => this.initForm())//Listen refresh event
       })
     },
     data() {
@@ -129,8 +130,8 @@
         this.locale = this.$clone(this.dataLocale)
         this.itemId = this.id !==null?this.id:this.$route.params.id
         if (this.locale.success) this.$refs.localeComponent.vReset()
-        this.getLocationPermisssions()
-        this.center = this.isPermissionDenied ? ['4.642129714308486', '-74.11376953125001'] : latLng(this.coords.latitude, this.coords.longitude)
+        await this.getLocationPermisssions()
+        this.center = this.coords ? latLng(this.coords.latitude, this.coords.longitude) : ['4.642129714308486', '-74.11376953125001']
         await this.getData()
         this.success = true
         this.loading = false

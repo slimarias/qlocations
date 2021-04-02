@@ -57,6 +57,9 @@ export default {
     title: 'qlocations.sidebar.adminCityCreate',
     icon: 'fas fa-building',
     authenticated: true,
+    subHeader:{
+      breadcrumb: ['qlocations.cities']
+    }
   },
   //City edit
   cityEdit: {
@@ -69,6 +72,10 @@ export default {
     title: 'qlocations.sidebar.adminCityEdit',
     icon: 'fas fa-building',
     authenticated: true,
+    subHeader:{
+      refresh: true,
+      breadcrumb: ['qlocations.cities']
+    }
   },
   //Polygons
   polygons: {
@@ -82,6 +89,9 @@ export default {
     title: 'qlocations.sidebar.adminPolygons',
     icon: 'fas fa-draw-polygon',
     authenticated: true,
+    subHeader: {
+      refresh: true
+    }
   },
   //Polygon create
   polygonCreate: {
@@ -90,10 +100,13 @@ export default {
     path: '/locations/polygons/create',
     name: 'qlocations.admin.polygons.create',
     page: () => import('@imagina/qlocations/_pages/admin/polygons/form'),
-    layout: () => import('@imagina/qlocations/_layouts/polygons.vue'),
+    layout: () => import('@imagina/qsite/_layouts/master.vue'),
     title: 'qlocations.sidebar.adminPolygonCreate',
     icon: 'fas fa-draw-polygon',
     authenticated: true,
+    subHeader:{
+      breadcrumb: ['qlocations.polygons']
+    }
   },
   //Polygon edit
   polygonEdit: {
@@ -102,10 +115,14 @@ export default {
     path: '/locations/polygons/:id',
     name: 'qlocations.admin.polygons.edit',
     page: () => import('@imagina/qlocations/_pages/admin/polygons/form'),
-    layout: () => import('@imagina/qlocations/_layouts/polygons.vue'),
+    layout: () => import('@imagina/qsite/_layouts/master.vue'),
     title: 'qlocations.sidebar.adminPolygonEdit',
     icon: 'fas fa-draw-polygon',
     authenticated: true,
+    subHeader:{
+      refresh: true,
+      breadcrumb: ['qlocations.polygons']
+    }
   },
   //Geozones
   geozones: {
@@ -119,6 +136,9 @@ export default {
     title: 'qlocations.sidebar.adminGeozones',
     icon: 'fas fa-map-marker-alt',
     authenticated: true,
+    subHeader: {
+      refresh: true
+    }
   },
   //Geozone create
   geozoneCreate: {
@@ -131,6 +151,9 @@ export default {
     title: 'qlocations.sidebar.adminGeozoneCreate',
     icon: 'fas fa-map-marker-alt',
     authenticated: true,
+    subHeader:{
+      breadcrumb: ['qlocations.geozones']
+    }
   },
   //Geozone edit
   geozoneEdit: {
@@ -143,6 +166,10 @@ export default {
     title: 'qlocations.sidebar.adminGeozoneEdit',
     icon: 'fas fa-map-marker-alt',
     authenticated: true,
+    subHeader: {
+      refresh: true,
+      breadcrumb: ['qlocations.geozones']
+    }
   },
   //Neighborhoods
   neighborhoods: {
@@ -156,6 +183,9 @@ export default {
     title: 'qlocations.sidebar.adminNeighborhoods',
     icon: 'fas fa-home',
     authenticated: true,
+    subHeader: {
+      refresh: true
+    }
   },
   //Polygon create
   neighborhoodCreate: {
@@ -168,6 +198,9 @@ export default {
     title: 'qlocations.sidebar.adminNeighborhoodCreate',
     icon: 'fas fa-home',
     authenticated: true,
+    subHeader:{
+      breadcrumb: ['qlocations.neighborhoods']
+    }
   },
   //Polygon edit
   neighborhoodEdit: {
@@ -180,6 +213,10 @@ export default {
     title: 'qlocations.sidebar.adminNeighborhoodEdit',
     icon: 'fas fa-home',
     authenticated: true,
+    subHeader: {
+      refresh: true,
+      breadcrumb: ['qlocations.neighborhoods']
+    }
   },
 
 }

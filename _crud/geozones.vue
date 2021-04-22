@@ -11,6 +11,7 @@
       crudData() {
         return {
           crudId: this.crudId,
+          entityName: config("main.qlocations.entityNames.geozone"),
           apiRoute: 'apiRoutes.qlocations.geozones',
           //permission: 'icommerce.manufacturers',
           create: {

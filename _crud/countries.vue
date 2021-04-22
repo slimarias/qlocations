@@ -11,6 +11,7 @@
       crudData() {
         return {
           crudId: this.crudId,
+          entityName: config("main.qlocations.entityNames.country"),
           apiRoute: 'apiRoutes.qlocations.countries',
           //permission: 'icommerce.manufacturers',
           create: {

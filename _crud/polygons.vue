@@ -11,6 +11,7 @@
       crudData() {
         return {
           crudId: this.crudId,
+          entityName: config("main.qlocations.entityNames.polygon"),
           apiRoute: 'apiRoutes.qlocations.polygons',
           //permission: 'icommerce.manufacturers',
           create: {

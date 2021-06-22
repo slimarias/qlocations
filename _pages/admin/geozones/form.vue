@@ -99,7 +99,7 @@
                     />
                   </div>
                   <div class="col-2">
-                    <q-btn color="negative" icon="fas fa-trash" @click="deleteGeozonable(index)" />
+                    <q-btn color="red" icon="fas fa-trash" @click="deleteGeozonable(index)" />
                   </div>
                 </div>
             </div>

@@ -53,7 +53,7 @@
                   />
                 </div>
                 <div class="col-4 col-md-2 text-right">
-                  <q-btn size="sm" class="btn-small" color="positive" icon="fas fa-plus" @click="showCityCreate = true">
+                  <q-btn size="sm" class="btn-small" color="green" icon="fas fa-plus" @click="showCityCreate = true">
                     <q-tooltip :offset="[10, 10]">
                       {{ $tr('qlocations.layout.newCity') }}
                     </q-tooltip>
@@ -66,10 +66,10 @@
                   position="bottom-right"
                   :offset="[18, 18]">
             <!--Update button-->
-            <q-btn v-if="$route.params.id" color="positive" :loading="loading"
+            <q-btn v-if="$route.params.id" color="green" :loading="loading"
                    icon="fas fa-edit" :label="$tr('ui.label.update')" type="submit"/>
             <!--Save button-->
-            <q-btn v-else color="positive" :loading="loading" icon="fas fa-edit"
+            <q-btn v-else color="green" :loading="loading" icon="fas fa-edit"
                    :label="$tr('ui.label.create')" type="submit"/>
           </q-page-sticky>
         </q-form>

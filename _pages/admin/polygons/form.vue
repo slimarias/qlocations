@@ -36,10 +36,10 @@
                   position="bottom-right"
                   :offset="[18, 18]">
             <!--Update button-->
-            <q-btn v-if="$route.params.id" color="positive" :loading="loading"
+            <q-btn v-if="$route.params.id" color="green" :loading="loading"
                    icon="fas fa-edit" :label="$tr('ui.label.update')" type="submit"/>
             <!--Save button-->
-            <q-btn v-else color="positive" :loading="loading" icon="fas fa-edit"
+            <q-btn v-else color="green" :loading="loading" icon="fas fa-edit"
                    :label="$tr('ui.label.create')" type="submit"/>
           </q-page-sticky>
         </q-form>
